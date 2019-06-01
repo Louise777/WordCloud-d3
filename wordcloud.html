@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta charset="UTF-8"/>
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="d3.layout.cloud.js"></script>
+</head>
+<body>
+
+<script>
+
+var colorscale = d3.scaleQuantize()
+                   .domain([10,100])
+				   .range(d3.schemeCategory10);
+
+var layout = d3.layout.cloud()
+					  .size([800,500])
+					  .words(["Hello", "world", "system", "javascript", "data", "html", "python","library", "analysis",
+							  "opensource", "compiler", "machine", "computer", "bigdata", "visualization", "science","mobile"]
+							  .map(d => ({text:d, size: 10+Math.random()*90})))
+					  .rotate( () => (~~(Math.random()*4)*30) )
+					  .font("Impact")
+					  .fontSize(d => d.size)
+					  .on("end",draw);
+
+layout.start();
+
+function draw(words){
+	d3.select("body")
+	  .append("svg")
+	  .attr("width",layout.size()[0])
+	  .attr("height",layout.size()[1])
+	  .append("g")
+	  .attr("transform","translate(" + layout.size()[0]/2 + "," + layout.size()[1]/2 +")")
+	  .selectAll("text")
+	  .data(words)
+	  .enter()
+	  .append("text")
+	  .style("font-size",d => d.size +"px")
+	  .style("font-family","Impact")
+	  .attr("text-anchor","middle")
+	  .attr("transform",d => "translate(" + [d.x,d.y] +")rotate(" + d.rotate + ")")
+	  .attr("fill",d => colorscale(d.size))
+	  .text(d => d.text);
+}
+	  
+
+
+</script>
+</body>
+
+
+</html>
